@@ -10,9 +10,11 @@ In the Agent Communication Protocol (ACP), a **Message** is a sequence of ordere
 | Attribute                  | Required | Description                                                               |
 | :------------------------- | :------- | :------------------------------------------------------------------------ |
 | `content_type`             | Yes      | The MIME type describing the format of the content                        |
-| `content` OR `content_url` | Yes      | Content provided inline (`content`) or via URL (`content_url`) |
+| `content` OR `content_url` | Yes      | Content provided inline (`content`) or via URL (`content_url`)            |
 | `content_encoding`         | No       | Encoding of the content (`"plain"` by default, or `"base64"`)             |
+| `metadata`                 | No       | Additional metadata extensions related to the content                     |
 | `name`                     | No       | If present, identifies the part as an **Artifact**                        |
+
 
 ## Artifacts
 
@@ -122,6 +124,7 @@ class MessagePart(BaseModel):
     content: Optional[str] = None
     content_encoding: Optional[Literal["plain", "base64"]] = "plain"
     content_url: Optional[AnyUrl] = None
+    metadata: Optional[Dict[str, Any]] = None
 
     # Validation ensures either content or content_url is provided, but not both
 

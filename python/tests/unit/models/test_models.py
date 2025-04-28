@@ -19,7 +19,7 @@ from acp_sdk.models.models import Message, MessagePart
                 parts=[
                     MessagePart(content_type="text/plain", content="Foo"),
                     MessagePart(content_type="text/html", content="<head>"),
-                    MessagePart(content_type="text/plain", content="Foo"),
+                    MessagePart(content_type="text/plain", content="Foo", metadata={"foo" : "bar"}),
                     MessagePart(content_type="text/plain", content="Bar"),
                 ]
             ),
@@ -27,9 +27,18 @@ from acp_sdk.models.models import Message, MessagePart
                 parts=[
                     MessagePart(content_type="text/plain", content="Foo"),
                     MessagePart(content_type="text/html", content="<head>"),
-                    MessagePart(content_type="text/plain", content="FooBar"),
+                    MessagePart(content_type="text/plain", content="FooBar", metadata={"foo" : "bar"}),
                 ]
             ),
+        ),
+        (
+            Message(
+                parts=[
+                    MessagePart(content_type="text/plain", content="Foo", metadata={"foo" : "bar"}),
+                    MessagePart(content_type="text/plain", content="Bar", metadata={"fizz" : "buzz"}),
+                ]
+            ),
+            Message(parts=[MessagePart(content_type="text/plain", content="FooBar", metadata={"foo" : "bar", "fizz" : "buzz"})]),
         ),
     ],
 )

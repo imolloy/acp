@@ -1,7 +1,7 @@
 import uuid
 from datetime import datetime
 from enum import Enum
-from typing import Any, Literal, Optional, Union
+from typing import Any, Literal, Optional, Union, Dict
 
 from pydantic import AnyUrl, BaseModel, ConfigDict, Field
 
@@ -79,7 +79,8 @@ class MessagePart(BaseModel):
     content: Optional[str] = None
     content_encoding: Optional[Literal["plain", "base64"]] = "plain"
     content_url: Optional[AnyUrl] = None
-
+    metadata: Optional[Dict[str, Any]] = None
+    
     model_config = ConfigDict(extra="allow")
 
     def model_post_init(self, __context: Any) -> None:
@@ -95,6 +96,7 @@ class Artifact(MessagePart):
 
 class Message(BaseModel):
     parts: list[MessagePart]
+    metadata: Optional[Dict[str, Any]] = None
 
     def __add__(self, other: "Message") -> "Message":
         if not isinstance(other, Message):
@@ -126,7 +128,13 @@ class Message(BaseModel):
                 content=first.content + second.content,
                 content_encoding="plain",
                 content_url=None,
+                metadata=merge_md(getattr(first, "metadata", None), getattr(second, "metadata", None))
             )
+            
+        def merge_md(first : Dict[str, Any], second : Dict[str, Any]) -> Dict[str, Any]:
+            if first is None and second is None:
+                return None
+            return ({} if first is None else first) | ({} if second is None else second)
 
         parts: list[MessagePart] = []
         for part in self.parts:
